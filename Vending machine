@@ -1,0 +1,146 @@
+#Creates a dictionary of items and their price and stock.
+items = {
+    '1001': {'name': 'Piatos', 'price': 5.00, 'stock': 7},
+    '1002': {'name': 'Cheetos', 'price': 4.00, 'stock': 5},
+    '1003': {'name': 'Cheepy', 'price': 4.50, 'stock': 4},
+    '1004': {'name': 'Clover', 'price': 5.50, 'stock': 6},
+    '2001': {'name': 'Egg Sandwich', 'price': 6.50, 'stock': 3},
+    '2002': {'name': 'Ham Sandwich', 'price': 7.00, 'stock': 5},
+    '2003': {'name': 'Cheese Sandwich', 'price': 5.50, 'stock': 4},
+    '2004': {'name': 'Veggy Sandwich', 'price': 8.00, 'stock': 7},
+    '3001': {'name': 'Coke', 'price': 3.00, 'stock': 5},
+    '3002': {'name': 'Sprite', 'price': 3.00, 'stock': 7},
+    '3003': {'name': 'Fanta', 'price': 3.00, 'stock': 7},
+    '3004': {'name': 'Water', 'price': 1.00, 'stock': 10},
+}
+#creates an empty cart
+cart = []
+
+#This function will display the items in the dictionary.
+def display_items():
+    print("\n************WELCOME TO EIZYAH'S VENDING MACHINE************\n")
+    print("****************ITEMS IN THE MACHINE****************")
+    print()
+    for code, item in items.items():
+        print(f" {code:} - {item['name']:<20} | {item['price']:.2f}AED | stock: {item['stock']} |")
+
+
+#This function is where you input the code of the item you want to purchase.
+def purchase(cart):
+    while True:
+        print()
+        #input the code for the item.
+        code = input("Enter the code of the item you want to add to your cart (or 'Q' to finish): ")
+        #If Q is called .
+        if code.upper() == 'Q':
+            #breaks the input whether there's an item or not.
+            break
+
+        #creates an if statement 
+        if code in items:
+            item = items[code]
+            name = item['name']
+            price = item['price']
+            stock = item['stock']
+        
+            if stock > 0:
+
+                cart.append((name, price))
+                item['stock'] -= 1
+                print("----------------------------------------------------------------------------------------\n")
+                print(f"YOU HAVE ADDED: {name} for {price:.2f}AED in your cart.             Remaining Stock: | {stock:>4}   |")
+                print("****************************************************************************************\n")
+            else:
+                print(f"Sorry, {name} is out of stock.")
+        else:
+            print("Invalid code. Please select a valid item.")
+
+#This function will display the purchases you made within the machine.
+def display_cart(cart):
+    if not cart:
+        print("Your cart is empty, please purchase items in the machine before inserting money.")
+        
+    else:
+        total_price = sum(item[1] for item in cart)
+        print("Your Cart: \n")
+        for item, price in cart:
+            print(f" {item:<10} - {price:.2f}AED ")
+            print("----------------------------")
+        print(f"Total: AED{total_price:.2f}\n")
+
+        
+        
+#Will ask the user for the exact amout of money needed for the purchase.        
+def get_money(cart):
+    total_price = sum(item[1] for item in cart)
+    cash = float(input(f"Insert the total amount of {total_price:.2f}AED:  "))
+
+
+    if cash >= total_price:
+        return cash
+    else:
+        print("Insufficient funds. Please insert more cash.")
+        return None
+
+#The machine will print out all the items purchased in the machine.
+def items_purchased(cart, total_price, cash):
+    if not cart:
+        print("No items purchased.")
+    else:
+        print("\nITEMS PURCHASED: \n")
+        for item, price in cart:
+            print(f"{item:<15} - {price:.2f}AED\n")
+        print("***************************************************\n")
+        print(f"*Total: {total_price:.2f}AED")
+        print(f"*Cash Received: {cash:.2f}AED\n")
+        print("***************************************************\n")
+        change = cash - total_price
+        print(f"*Your Change is: {change:.2f}AED\n")
+        print("***************************************************\n")
+        print("Thank you for using Eizyah's Vending Machine!!!")
+
+#this function will ask the user to rate after everything is done.
+def rating():
+    while True:
+        user_input = input("Would you like to rate Eizyah's vending machine (y/n)?:  ")
+        if user_input.lower() == "y":
+            user_rating = int(input("How would you like to rate Eizyah's vending machine from 1 - 5? "))
+            if user_rating == 1 or user_rating == 2 or user_rating == 3:
+                print("Thank you for rating my machine! I'll do my best to improve.")
+                break
+            if user_rating == 4 or user_rating == 5: 
+                print("Thank you for the excellent rating. I look forward to you using my machine again!")
+                break
+            else:
+                print("You have either exceeded your rate or rated below the given ratings. Please rate again.")
+        elif user_input.lower() == "n":
+            print("Thank you for using Eizyah's vending machine!!")
+            break
+        else:
+            print("You didnt put a valid answer.")
+            
+#puts all the functions into 1
+def vending_machine():
+    #Displays all the available items.
+    display_items()
+
+    #Purchase items and adds them to the cart.
+    purchase(cart)
+
+    #Displays the purchased items in the cart.
+    display_cart(cart)
+
+    #Ask the user money for the purchased items in the cart.
+    cash_received = get_money(cart)
+    while cash_received is None:
+        cash_received = get_money(cart)
+
+    #Displays all the purchased items in the machine.
+    total_price = sum(item[1] for item in cart)
+    items_purchased(cart, total_price, cash_received)
+
+    #shows the rating display
+    rating()
+
+#runs the vending machine 
+vending_machine()
